@@ -1,5 +1,5 @@
 package main
 
 type User struct {
-	UserName string
+	UserName string `gorm:"index:idx_username"`
 }

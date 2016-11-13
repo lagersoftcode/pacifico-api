@@ -21,6 +21,7 @@ func startServer() {
 }
 
 func main() {
+
 	if dbError != nil {
 		log.Fatal(dbError)
 	} else {

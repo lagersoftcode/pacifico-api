@@ -8,7 +8,7 @@ import (
 	jwt "github.com/dgrijalva/jwt-go"
 )
 
-const authCookie = "auth_token2"
+const authCookie = "auth_token"
 
 func ValidateToken(res http.ResponseWriter, req *http.Request) *jwt.Token {
 	defToken := jwt.Token{Valid: false}

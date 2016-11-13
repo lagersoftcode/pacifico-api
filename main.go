@@ -16,8 +16,8 @@ var db, dbError = gorm.Open("mysql", config.DBConnString)
 var router = mux.NewRouter().StrictSlash(true)
 
 func startServer() {
-	fmt.Println("Starting server on address: " + config.Address)
-	log.Fatal(http.ListenAndServe(config.Address, router))
+	fmt.Println("Starting server on address: " + config.ServerAddress)
+	log.Fatal(http.ListenAndServe(config.ServerAddress, router))
 }
 
 func main() {

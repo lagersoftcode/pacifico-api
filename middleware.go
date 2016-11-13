@@ -27,7 +27,7 @@ func Authorize(handler http.Handler, adminOnly bool) http.HandlerFunc {
 			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 				return nil, fmt.Errorf("Unexpected siging method")
 			}
-			return []byte(config.TokenKey), nil
+			return []byte(config.AuthKey), nil
 		})
 
 		if err != nil {

@@ -88,7 +88,7 @@ func setToken(rw http.ResponseWriter, userName string, isAdmin bool) {
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
-	signedToken, _ := token.SignedString([]byte(config.TokenKey))
+	signedToken, _ := token.SignedString([]byte(config.AuthKey))
 	cookie := http.Cookie{Name: "auth_token", Value: signedToken, Expires: expireCookie, HttpOnly: true}
 	http.SetCookie(rw, &cookie)
 }

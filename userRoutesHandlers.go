@@ -62,6 +62,19 @@ func CreateUser(rw http.ResponseWriter, req *http.Request) {
 		panic(parseErr)
 	}
 
+	if len(request.Username) > 0 && len(request.Password) > 0 {
+		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(request.Password), bcrypt.DefaultCost)
+		if err == nil {
+			user := User{
+				UserName: request.Username,
+				Password: string(hashedPassword),
+				IsLocked: false,
+				IsAdmin:  false,
+			}
+			db.Create(&user)
+		}
+	}
+
 	response := CreateUserResponse{Response{http.StatusCreated}}
 
 	rw.WriteHeader(http.StatusCreated)

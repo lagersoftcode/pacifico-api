@@ -15,7 +15,6 @@ type Response struct {
 type CreateUserRequest struct {
 	Username string
 	Password string
-	Token    string
 }
 
 type CreateUserResponse struct {

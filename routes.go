@@ -15,6 +15,14 @@ type Routes []Route
 
 var routes = Routes{
 	Route{
+		"Login",
+		"POST",
+		"/Login",
+		false,
+		false,
+		Login,
+	},
+	Route{
 		"CreateUser",
 		"POST",
 		"/CreateUser",
@@ -28,7 +36,7 @@ func DeclareRoutes() {
 	for _, route := range routes {
 		handler := AddJSONResponseHeader(route.Handler)
 		if route.Authorize {
-			handler = Authorize.Handler(handler)
+			handler = Authorize(handler, route.AdminOnly)
 		}
 		router.
 			Methods(route.Method).

@@ -1,10 +1,10 @@
 package main
 
 import (
-	"encoding/base64"
+	"context"
+	"fmt"
 	"net/http"
 
-	"github.com/auth0/go-jwt-middleware"
 	"github.com/dgrijalva/jwt-go"
 )
 
@@ -15,12 +15,35 @@ func AddJSONResponseHeader(inner http.Handler) http.Handler {
 	})
 }
 
-var Authorize = jwtmiddleware.New(jwtmiddleware.Options{
-	ValidationKeyGetter: func(token *jwt.Token) (interface{}, error) {
-		decoded, err := base64.URLEncoding.DecodeString(config.TokenKey)
+func Authorize(handler http.Handler, adminOnly bool) http.HandlerFunc {
+	return http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+
+		cookie, err := req.Cookie("auth_token")
 		if err != nil {
-			return nil, err
+			http.NotFound(res, req)
+			return
 		}
-		return decoded, nil
-	},
-})
+		token, err := jwt.ParseWithClaims(cookie.Value, &Claims{}, func(token *jwt.Token) (interface{}, error) {
+			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+				return nil, fmt.Errorf("Unexpected siging method")
+			}
+			return []byte(config.TokenKey), nil
+		})
+
+		if err != nil {
+			http.NotFound(res, req)
+			return
+		}
+
+		if claims, ok := token.Claims.(*Claims); ok && token.Valid {
+			if adminOnly && claims.IsAdmin {
+				ctx := context.WithValue(req.Context(), "claims", *claims)
+				handler.ServeHTTP(res, req.WithContext(ctx))
+				return
+			}
+
+			http.NotFound(res, req)
+			return
+		}
+	})
+}

@@ -4,34 +4,9 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
-	"time"
 
 	"golang.org/x/crypto/bcrypt"
-
-	jwt "github.com/dgrijalva/jwt-go"
 )
-
-func CreateUser(rw http.ResponseWriter, req *http.Request) {
-
-	body, readErr := ioutil.ReadAll(req.Body)
-	defer req.Body.Close()
-	if readErr != nil {
-		panic(readErr)
-	}
-
-	var request CreateUserRequest
-	parseErr := json.Unmarshal(body, &request)
-	if parseErr != nil {
-		panic(parseErr)
-	}
-
-	response := CreateUserResponse{Response{http.StatusCreated}}
-
-	rw.WriteHeader(http.StatusCreated)
-	if err := json.NewEncoder(rw).Encode(response); err != nil {
-		panic(err)
-	}
-}
 
 func Login(rw http.ResponseWriter, req *http.Request) {
 
@@ -63,7 +38,7 @@ func Login(rw http.ResponseWriter, req *http.Request) {
 			rw.WriteHeader(http.StatusUnauthorized)
 		} else {
 			response.Success = true
-			setToken(rw, user.UserName, user.IsAdmin)
+			SetToken(rw, user.UserName, user.IsAdmin)
 			rw.WriteHeader(http.StatusOK)
 		}
 	}
@@ -73,22 +48,24 @@ func Login(rw http.ResponseWriter, req *http.Request) {
 	}
 }
 
-func setToken(rw http.ResponseWriter, userName string, isAdmin bool) {
-	expireToken := time.Now().Add(time.Hour * 24).Unix()
-	expireCookie := time.Now().Add(time.Hour * 24)
+func CreateUser(rw http.ResponseWriter, req *http.Request) {
 
-	claims := Claims{
-		userName,
-		isAdmin,
-		jwt.StandardClaims{
-			ExpiresAt: expireToken,
-			Issuer:    "x",
-		},
+	body, readErr := ioutil.ReadAll(req.Body)
+	defer req.Body.Close()
+	if readErr != nil {
+		panic(readErr)
 	}
 
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	var request CreateUserRequest
+	parseErr := json.Unmarshal(body, &request)
+	if parseErr != nil {
+		panic(parseErr)
+	}
 
-	signedToken, _ := token.SignedString([]byte(config.AuthKey))
-	cookie := http.Cookie{Name: "auth_token", Value: signedToken, Expires: expireCookie, HttpOnly: true}
-	http.SetCookie(rw, &cookie)
+	response := CreateUserResponse{Response{http.StatusCreated}}
+
+	rw.WriteHeader(http.StatusCreated)
+	if err := json.NewEncoder(rw).Encode(response); err != nil {
+		panic(err)
+	}
 }

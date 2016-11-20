@@ -33,6 +33,11 @@ var routes = Routes{
 }
 
 func DeclareRoutes() {
+	router.Methods("OPTIONS").HandlerFunc(
+		func(w http.ResponseWriter, r *http.Request) {
+			corsHandler(w, r)
+		})
+
 	for _, route := range routes {
 		handler := AddJSONResponseHeader(route.Handler)
 		if route.Authorize {
@@ -43,5 +48,12 @@ func DeclareRoutes() {
 			Path(route.Pattern).
 			Name(route.Name).
 			Handler(handler)
+
 	}
+}
+
+func corsHandler(rw http.ResponseWriter, req *http.Request) {
+	rw.Header().Set("Access-Control-Allow-Origin", config.CORSDomain)
+	rw.Header().Set("Access-Control-Allow-Headers", "Content-type, With-Credentials")
+	rw.WriteHeader(http.StatusOK)
 }

@@ -7,6 +7,8 @@ import (
 
 func AddJSONResponseHeader(inner http.Handler) http.Handler {
 	return http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
+		rw.Header().Set("Access-Control-Allow-Origin", config.CORSDomain)
+		rw.Header().Set("Access-Control-Allow-Headers", "Content-type, With-Credentials")
 		rw.Header().Set("Content-Type", "application/json; charset=UTF-8")
 		inner.ServeHTTP(rw, req)
 	})

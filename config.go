@@ -6,6 +6,8 @@ type Config struct {
 	ServerAddress string
 	DBConnString  string
 	AuthKey       string
+	AppDomain     string
+	CORSDomain    string
 }
 
 func GetConfig() Config {
@@ -13,6 +15,8 @@ func GetConfig() Config {
 		ServerAddress: ":8000",
 		DBConnString:  "fer:password@/pacifico?charset=utf8&parseTime=True&loc=Local",
 		AuthKey:       "123456",
+		AppDomain:     "localhost",
+		CORSDomain:    "*",
 	}
 
 	toml.DecodeFile("pacifico.conf", &config)

@@ -48,6 +48,6 @@ func SetToken(rw http.ResponseWriter, userName string, isAdmin bool) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
 	signedToken, _ := token.SignedString([]byte(config.AuthKey))
-	cookie := http.Cookie{Name: authCookie, Value: signedToken, Expires: expireCookie, HttpOnly: true}
+	cookie := http.Cookie{Name: authCookie, Value: signedToken, Expires: expireCookie, HttpOnly: true, Domain: "." + config.AppDomain, Path: "/"}
 	http.SetCookie(rw, &cookie)
 }

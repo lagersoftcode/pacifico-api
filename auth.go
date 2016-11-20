@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/base64"
 	"fmt"
 	"net/http"
 	"time"
@@ -8,17 +9,12 @@ import (
 	jwt "github.com/dgrijalva/jwt-go"
 )
 
-const authCookie = "auth_token"
-
-func ValidateToken(res http.ResponseWriter, req *http.Request) *jwt.Token {
+func ValidateToken(res http.ResponseWriter, req AuthorizedRequest) *jwt.Token {
 	defToken := jwt.Token{Valid: false}
-	cookie, err := req.Cookie(authCookie)
 
-	if err != nil {
-		return &defToken
-	}
+	decoded, _ := base64.StdEncoding.DecodeString(req.AuthToken)
 
-	token, err := jwt.ParseWithClaims(cookie.Value, &Claims{}, func(token *jwt.Token) (interface{}, error) {
+	token, err := jwt.ParseWithClaims(string(decoded), &Claims{}, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("Unexpected siging method")
 		}
@@ -32,9 +28,8 @@ func ValidateToken(res http.ResponseWriter, req *http.Request) *jwt.Token {
 	return token
 }
 
-func SetToken(rw http.ResponseWriter, userName string, isAdmin bool) {
+func GetToken(rw http.ResponseWriter, userName string, isAdmin bool) string {
 	expireToken := time.Now().Add(time.Hour * 24).Unix()
-	expireCookie := time.Now().Add(time.Hour * 24)
 
 	claims := Claims{
 		userName,
@@ -48,6 +43,5 @@ func SetToken(rw http.ResponseWriter, userName string, isAdmin bool) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
 	signedToken, _ := token.SignedString([]byte(config.AuthKey))
-	cookie := http.Cookie{Name: authCookie, Value: signedToken, Expires: expireCookie, HttpOnly: true, Domain: "." + config.AppDomain, Path: "/"}
-	http.SetCookie(rw, &cookie)
+	return base64.StdEncoding.EncodeToString([]byte(signedToken))
 }

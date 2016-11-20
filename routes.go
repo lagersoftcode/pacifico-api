@@ -8,7 +8,7 @@ type Route struct {
 	Pattern   string
 	Authorize bool
 	AdminOnly bool
-	Handler   http.HandlerFunc
+	Handler   BaseRouteHandler
 }
 
 type Routes []Route
@@ -35,14 +35,12 @@ var routes = Routes{
 func DeclareRoutes() {
 	router.Methods("OPTIONS").HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
-			corsHandler(w, r)
+			CorsHandler(w, r)
 		})
 
 	for _, route := range routes {
-		handler := AddJSONResponseHeader(route.Handler)
-		if route.Authorize {
-			handler = Authorize(handler, route.AdminOnly)
-		}
+		handler := BaseHandler(route.Handler, route.Authorize, route.AdminOnly)
+
 		router.
 			Methods(route.Method).
 			Path(route.Pattern).
@@ -50,10 +48,4 @@ func DeclareRoutes() {
 			Handler(handler)
 
 	}
-}
-
-func corsHandler(rw http.ResponseWriter, req *http.Request) {
-	rw.Header().Set("Access-Control-Allow-Origin", config.CORSDomain)
-	rw.Header().Set("Access-Control-Allow-Headers", "Content-type, With-Credentials")
-	rw.WriteHeader(http.StatusOK)
 }

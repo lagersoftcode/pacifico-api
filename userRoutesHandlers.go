@@ -2,22 +2,15 @@ package main
 
 import (
 	"encoding/json"
-	"io/ioutil"
 	"net/http"
 
 	"golang.org/x/crypto/bcrypt"
 )
 
-func Login(rw http.ResponseWriter, req *http.Request) {
-
-	body, readErr := ioutil.ReadAll(req.Body)
-	defer req.Body.Close()
-	if readErr != nil {
-		panic(readErr)
-	}
+func Login(rw http.ResponseWriter, req *http.Request, routeData RouteData) {
 
 	var request LoginRequest
-	parseErr := json.Unmarshal(body, &request)
+	parseErr := json.Unmarshal(routeData.Body, &request)
 	if parseErr != nil {
 		panic(parseErr)
 	}
@@ -38,7 +31,7 @@ func Login(rw http.ResponseWriter, req *http.Request) {
 			rw.WriteHeader(http.StatusUnauthorized)
 		} else {
 			response.Success = true
-			SetToken(rw, user.UserName, user.IsAdmin)
+			response.AuthToken = GetToken(rw, user.UserName, user.IsAdmin)
 			rw.WriteHeader(http.StatusOK)
 		}
 	}
@@ -48,16 +41,10 @@ func Login(rw http.ResponseWriter, req *http.Request) {
 	}
 }
 
-func CreateUser(rw http.ResponseWriter, req *http.Request) {
-
-	body, readErr := ioutil.ReadAll(req.Body)
-	defer req.Body.Close()
-	if readErr != nil {
-		panic(readErr)
-	}
+func CreateUser(rw http.ResponseWriter, req *http.Request, routeData RouteData) {
 
 	var request CreateUserRequest
-	parseErr := json.Unmarshal(body, &request)
+	parseErr := json.Unmarshal(routeData.Body, &request)
 	if parseErr != nil {
 		panic(parseErr)
 	}
@@ -76,7 +63,6 @@ func CreateUser(rw http.ResponseWriter, req *http.Request) {
 	}
 
 	response := CreateUserResponse{Response{http.StatusCreated}}
-
 	rw.WriteHeader(http.StatusCreated)
 	if err := json.NewEncoder(rw).Encode(response); err != nil {
 		panic(err)

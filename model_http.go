@@ -34,6 +34,10 @@ type CreateUserResponse struct {
 	Response
 }
 
+type GetUsersResponse struct {
+	Users []PublicUser
+}
+
 type LoginRequest struct {
 	Username string
 	Password string

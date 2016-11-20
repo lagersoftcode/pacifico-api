@@ -30,6 +30,14 @@ var routes = Routes{
 		true,
 		CreateUser,
 	},
+	Route{
+		"GetUsers",
+		"Get",
+		"/GetUsers",
+		true,
+		false,
+		GetUsers,
+	},
 }
 
 func DeclareRoutes() {

@@ -68,3 +68,15 @@ func CreateUser(rw http.ResponseWriter, req *http.Request, routeData RouteData) 
 		panic(err)
 	}
 }
+
+func GetUsers(rw http.ResponseWriter, req *http.Request, routeData RouteData) {
+
+	var users []User
+	var publicUsers []PublicUser
+	db.Find(&users).Scan(&publicUsers)
+	response := GetUsersResponse{Users: publicUsers}
+	rw.WriteHeader(http.StatusCreated)
+	if err := json.NewEncoder(rw).Encode(response); err != nil {
+		panic(err)
+	}
+}

@@ -43,10 +43,14 @@ func Authorize(handler http.Handler, routeData *RouteData, requiresAuth bool, ad
 		}
 
 		var request AuthorizedRequest
-		parseErr := json.Unmarshal(routeData.Body, &request)
-
-		if parseErr != nil {
-			panic(parseErr)
+		if len(body) > 0 {
+			parseErr := json.Unmarshal(routeData.Body, &request)
+			if parseErr != nil {
+				panic(parseErr)
+			}
+		} else {
+			var tokenInQuery = req.URL.Query().Get("AuthToken")
+			request = AuthorizedRequest{AuthToken: tokenInQuery}
 		}
 
 		token := ValidateToken(res, request)

@@ -19,7 +19,7 @@ func Login(rw http.ResponseWriter, req *http.Request, routeData RouteData) {
 	var user User
 	db.Where(&User{UserName: request.Username}).First(&user)
 
-	if user.ID == 0 {
+	if len(user.ID) > 0 {
 		response.Success = false
 		response.Message = "Invalid credentials"
 		rw.WriteHeader(http.StatusUnauthorized)

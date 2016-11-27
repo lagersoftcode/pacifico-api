@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 	"io/ioutil"
 	"net/http"
 )
@@ -42,18 +41,9 @@ func Authorize(handler http.Handler, routeData *RouteData, requiresAuth bool, ad
 			return
 		}
 
-		var request AuthorizedRequest
-		if len(body) > 0 {
-			parseErr := json.Unmarshal(routeData.Body, &request)
-			if parseErr != nil {
-				panic(parseErr)
-			}
-		} else {
-			var tokenInQuery = req.URL.Query().Get("AuthToken")
-			request = AuthorizedRequest{AuthToken: tokenInQuery}
-		}
+		var tokenInQuery = req.URL.Query().Get("AuthToken")
 
-		token := ValidateToken(res, request)
+		token := ValidateToken(tokenInQuery)
 
 		claims, claimsOk := token.Claims.(*Claims)
 		if token.Valid && claimsOk && (!adminOnly || adminOnly && claims.IsAdmin) {

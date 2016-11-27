@@ -8,10 +8,10 @@ import (
 	jwt "github.com/dgrijalva/jwt-go"
 )
 
-func ValidateToken(res http.ResponseWriter, req AuthorizedRequest) *jwt.Token {
+func ValidateToken(tokenString string) *jwt.Token {
 	defToken := jwt.Token{Valid: false}
 
-	token, err := jwt.ParseWithClaims(string(req.AuthToken), &Claims{}, func(token *jwt.Token) (interface{}, error) {
+	token, err := jwt.ParseWithClaims(tokenString, &Claims{}, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("Unexpected siging method")
 		}

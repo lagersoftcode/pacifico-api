@@ -12,10 +12,6 @@ type Claims struct {
 	jwt.StandardClaims
 }
 
-type AuthorizedRequest struct {
-	AuthToken string
-}
-
 type BaseRouteHandler func(rw http.ResponseWriter, r *http.Request, routeData RouteData)
 type RouteData struct {
 	Body []byte

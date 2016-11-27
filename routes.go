@@ -46,6 +46,14 @@ var routes = Routes{
 		true,
 		CreateTrophy,
 	},
+	Route{
+		"CreateMedal",
+		"POST",
+		"/CreateMedal",
+		true,
+		true,
+		CreateMedal,
+	},
 }
 
 func DeclareRoutes() {

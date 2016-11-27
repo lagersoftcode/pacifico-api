@@ -18,8 +18,6 @@ func BaseHandler(handler BaseRouteHandler, requiresAuth bool, adminOnly bool) ht
 
 func addJSONResponseHeader(inner http.Handler) http.Handler {
 	return http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
-		rw.Header().Set("Access-Control-Allow-Origin", config.CORSDomain)
-		rw.Header().Set("Access-Control-Allow-Headers", "Content-type, With-Credentials")
 		rw.Header().Set("Content-Type", "application/json; charset=UTF-8")
 		inner.ServeHTTP(rw, req)
 	})
@@ -27,6 +25,10 @@ func addJSONResponseHeader(inner http.Handler) http.Handler {
 
 func Authorize(handler http.Handler, routeData *RouteData, requiresAuth bool, adminOnly bool) http.Handler {
 	return http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+
+		res.Header().Set("Access-Control-Allow-Origin", config.CORSDomain)
+		res.Header().Set("Access-Control-Allow-Headers", "Content-type, With-Credentials")
+
 		body, readErr := ioutil.ReadAll(req.Body)
 		defer req.Body.Close()
 		if readErr != nil {
@@ -51,7 +53,8 @@ func Authorize(handler http.Handler, routeData *RouteData, requiresAuth bool, ad
 			return
 		}
 
-		http.NotFound(res, req)
+		res.WriteHeader(http.StatusUnauthorized)
+		return
 	})
 }
 

@@ -32,3 +32,30 @@ func CreateTrophy(rw http.ResponseWriter, req *http.Request, routeData RouteData
 		panic(err)
 	}
 }
+
+func CreateMedal(rw http.ResponseWriter, req *http.Request, routeData RouteData) {
+
+	var request CreateMedalRequest
+	parseErr := json.Unmarshal(routeData.Body, &request)
+	if parseErr != nil {
+		panic(parseErr)
+	}
+
+	if len(request.Name) > 0 && len(request.Image) > 0 {
+		medal := Medal{
+			ID:          uuid.NewV4().String(),
+			Name:        request.Name,
+			Description: request.Description,
+			Image:       request.Image,
+			Material:    MedalMaterial(request.Material),
+			ScoreAmount: request.ScoreAmount,
+		}
+		db.Create(&medal)
+	}
+
+	response := Response{http.StatusCreated}
+	rw.WriteHeader(http.StatusCreated)
+	if err := json.NewEncoder(rw).Encode(response); err != nil {
+		panic(err)
+	}
+}

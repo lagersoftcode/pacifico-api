@@ -55,3 +55,13 @@ type CreateTrophyRequest struct {
 	Description string
 	ScoreAmount uint
 }
+
+// Medals
+
+type CreateMedalRequest struct {
+	Name        string
+	Image       string
+	Material    int
+	Description string
+	ScoreAmount uint
+}

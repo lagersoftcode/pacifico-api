@@ -19,9 +19,9 @@ func Login(rw http.ResponseWriter, req *http.Request, routeData RouteData) {
 	var user User
 	db.Where(&User{UserName: request.Username}).First(&user)
 
-	if len(user.ID) > 0 {
+	if len(user.ID) < 1 {
 		response.Success = false
-		response.Message = "Invalid credentials"
+		response.Message = "User not found"
 		rw.WriteHeader(http.StatusUnauthorized)
 	} else {
 		err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(request.Password))

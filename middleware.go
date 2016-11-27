@@ -9,7 +9,6 @@ import (
 func BaseHandler(handler BaseRouteHandler, requiresAuth bool, adminOnly bool) http.Handler {
 
 	var routeData RouteData
-
 	httpHandler := addJSONResponseHeader(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		handler(w, r, routeData)
 	}))

@@ -21,6 +21,8 @@ type Response struct {
 	HttpResult int
 }
 
+// Login
+
 type CreateUserRequest struct {
 	Username string
 	Password string
@@ -43,4 +45,13 @@ type LoginResponse struct {
 	Success   bool
 	Message   string
 	AuthToken string
+}
+
+// Trophies
+
+type CreateTrophyRequest struct {
+	Name        string
+	Image       string
+	Description string
+	ScoreAmount uint
 }

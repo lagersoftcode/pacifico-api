@@ -32,11 +32,19 @@ var routes = Routes{
 	},
 	Route{
 		"GetUsers",
-		"Get",
+		"GET",
 		"/GetUsers",
 		true,
 		false,
 		GetUsers,
+	},
+	Route{
+		"CreateTrophy",
+		"POST",
+		"/CreateTrophy",
+		true,
+		true,
+		CreateTrophy,
 	},
 }
 

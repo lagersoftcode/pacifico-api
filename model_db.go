@@ -44,6 +44,7 @@ type Medal struct {
 	ID          string `gorm:"primary_key;type:char(36)"`
 	Name        string `gorm:"type:varchar(50)"`
 	Description string `gorm:"type:varchar(50)"`
+	Image       string `gorm:"type:varchar(200)"`
 	Material    MedalMaterial
 	ScoreAmount uint
 }
@@ -51,6 +52,7 @@ type Medal struct {
 type Trophy struct {
 	ID          string `gorm:"primary_key;type:char(36)"`
 	Name        string `gorm:"type:varchar(50)"`
+	Image       string `gorm:"type:varchar(200)"`
 	Description string `gorm:"type:varchar(50)"`
 	ScoreAmount uint
 }

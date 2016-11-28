@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"io/ioutil"
 	"net/http"
 )
@@ -48,8 +47,7 @@ func Authorize(handler http.Handler, routeData *RouteData, requiresAuth bool, ad
 
 		claims, claimsOk := token.Claims.(*Claims)
 		if token.Valid && claimsOk && (!adminOnly || adminOnly && claims.IsAdmin) {
-			ctx := context.WithValue(req.Context(), "claims", *claims)
-			handler.ServeHTTP(res, req.WithContext(ctx))
+			handler.ServeHTTP(res, req)
 			return
 		}
 

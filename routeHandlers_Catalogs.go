@@ -33,6 +33,17 @@ func CreateTrophy(rw http.ResponseWriter, req *http.Request, routeData RouteData
 	}
 }
 
+func GetTrophies(rw http.ResponseWriter, req *http.Request, routeData RouteData) {
+
+	var trophies []Trophy
+	db.Find(&trophies)
+	response := GetTrophiesResponse{Trophies: trophies}
+	rw.WriteHeader(http.StatusCreated)
+	if err := json.NewEncoder(rw).Encode(response); err != nil {
+		panic(err)
+	}
+}
+
 func CreateMedal(rw http.ResponseWriter, req *http.Request, routeData RouteData) {
 
 	var request CreateMedalRequest
@@ -54,6 +65,17 @@ func CreateMedal(rw http.ResponseWriter, req *http.Request, routeData RouteData)
 	}
 
 	response := Response{http.StatusCreated}
+	rw.WriteHeader(http.StatusCreated)
+	if err := json.NewEncoder(rw).Encode(response); err != nil {
+		panic(err)
+	}
+}
+
+func GetMedals(rw http.ResponseWriter, req *http.Request, routeData RouteData) {
+
+	var medals []Medal
+	db.Find(&medals)
+	response := GetMedalsResponse{Medals: medals}
 	rw.WriteHeader(http.StatusCreated)
 	if err := json.NewEncoder(rw).Encode(response); err != nil {
 		panic(err)

@@ -14,46 +14,13 @@ type Route struct {
 type Routes []Route
 
 var routes = Routes{
-	Route{
-		"Login",
-		"POST",
-		"/Login",
-		false,
-		false,
-		Login,
-	},
-	Route{
-		"CreateUser",
-		"POST",
-		"/CreateUser",
-		true,
-		true,
-		CreateUser,
-	},
-	Route{
-		"GetUsers",
-		"GET",
-		"/GetUsers",
-		true,
-		false,
-		GetUsers,
-	},
-	Route{
-		"CreateTrophy",
-		"POST",
-		"/CreateTrophy",
-		true,
-		true,
-		CreateTrophy,
-	},
-	Route{
-		"CreateMedal",
-		"POST",
-		"/CreateMedal",
-		true,
-		true,
-		CreateMedal,
-	},
+	Route{"Login", "POST", "/Login", false, false, Login},
+	Route{"CreateUser", "POST", "/CreateUser", true, true, CreateUser},
+	Route{"GetUsers", "GET", "/GetUsers", true, false, GetUsers},
+	Route{"CreateTrophy", "POST", "/CreateTrophy", true, true, CreateTrophy},
+	Route{"GetTrophies", "GET", "/GetTrophies", true, false, GetTrophies},
+	Route{"CreateMedal", "POST", "/CreateMedal", true, true, CreateMedal},
+	Route{"GetMedals", "GET", "/GetMedals", true, false, GetMedals},
 }
 
 func DeclareRoutes() {
@@ -70,6 +37,5 @@ func DeclareRoutes() {
 			Path(route.Pattern).
 			Name(route.Name).
 			Handler(handler)
-
 	}
 }

@@ -56,6 +56,10 @@ type CreateTrophyRequest struct {
 	ScoreAmount uint
 }
 
+type GetTrophiesResponse struct {
+	Trophies []Trophy
+}
+
 // Medals
 
 type CreateMedalRequest struct {
@@ -64,4 +68,8 @@ type CreateMedalRequest struct {
 	Material    int
 	Description string
 	ScoreAmount uint
+}
+
+type GetMedalsResponse struct {
+	Medals []Medal
 }

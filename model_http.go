@@ -2,12 +2,14 @@ package main
 
 import (
 	"net/http"
+	"time"
 
 	jwt "github.com/dgrijalva/jwt-go"
 )
 
 type Claims struct {
 	Username string
+	UserId   string
 	IsAdmin  bool
 	jwt.StandardClaims
 }
@@ -16,6 +18,7 @@ type BaseRouteHandler func(rw http.ResponseWriter, r *http.Request, routeData Ro
 type RouteData struct {
 	Body     []byte
 	Username string
+	UserId   string
 }
 
 type Response struct {
@@ -85,4 +88,15 @@ type GiveTrophyRequest struct {
 type GiveMedalRequest struct {
 	UserId  string
 	MedalId string
+}
+
+type PublicAction struct {
+	CreatedAt  time.Time
+	SourceUser string
+	TargetUser string
+	Item       string
+}
+
+type GetLastActionsResponse struct {
+	LastActions []PublicAction
 }

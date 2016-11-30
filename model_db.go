@@ -2,12 +2,10 @@ package main
 
 import "time"
 
-type ScoreTransactionType int
-
 const (
-	MedalTransaction  ScoreTransactionType = 1
-	TrophyTransaction ScoreTransactionType = 2
-	KudoTransaction   ScoreTransactionType = 3
+	MedalTransaction  = "Medal"
+	TrophyTransaction = "Trophy"
+	KudoTransaction   = "Kudo"
 )
 
 const (
@@ -31,12 +29,14 @@ type User struct {
 }
 
 type ScoreTransaction struct {
-	ID              string               `gorm:"primary_key;type:char(36)"`
-	CreatedAt       time.Time            `gorm:"index:idx_createdAt"`
-	TransactionType ScoreTransactionType `gorm:"index:idx_transactionType"`
-	UserID          string               `gorm:"index:idx_userId;type:char(36)"`
-	ItemDataId      string               `gorm:"type:char(36)"`
-	GivenBy         string               `gorm:"type:varchar(30)"`
+	ID              string    `gorm:"primary_key;type:char(36)"`
+	CreatedAt       time.Time `gorm:"index:idx_createdAt"`
+	TransactionType string    `gorm:"index:idx_transactionType"`
+	UserID          string    `gorm:"index:idx_userId;type:char(36)"`
+	UserName        string    `gorm:"type:char(30)"`
+	ItemDataId      string    `gorm:"type:char(36)"`
+	GivenBy         string    `gorm:"type:varchar(30)"`
+	GivenById       string    `gorm:"type:char(36)"`
 	Points          uint
 }
 

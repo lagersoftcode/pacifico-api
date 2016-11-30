@@ -33,7 +33,7 @@ func Login(rw http.ResponseWriter, req *http.Request, routeData RouteData) {
 			rw.WriteHeader(http.StatusUnauthorized)
 		} else {
 			response.Success = true
-			response.AuthToken = GetToken(rw, user.UserName, user.IsAdmin)
+			response.AuthToken = GetToken(rw, user.UserName, user.ID, user.IsAdmin)
 			rw.WriteHeader(http.StatusOK)
 		}
 	}
@@ -78,7 +78,7 @@ func GetUsers(rw http.ResponseWriter, req *http.Request, routeData RouteData) {
 	var publicUsers []PublicUser
 	db.Find(&users).Scan(&publicUsers)
 	response := GetUsersResponse{Users: publicUsers}
-	rw.WriteHeader(http.StatusCreated)
+	rw.WriteHeader(http.StatusOK)
 	if err := json.NewEncoder(rw).Encode(response); err != nil {
 		panic(err)
 	}

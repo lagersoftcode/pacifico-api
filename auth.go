@@ -25,11 +25,12 @@ func ValidateToken(tokenString string) *jwt.Token {
 	return token
 }
 
-func GetToken(rw http.ResponseWriter, userName string, isAdmin bool) string {
+func GetToken(rw http.ResponseWriter, userName string, userId string, isAdmin bool) string {
 	expireToken := time.Now().Add(time.Hour * 24).Unix()
 
 	claims := Claims{
 		userName,
+		userId,
 		isAdmin,
 		jwt.StandardClaims{
 			ExpiresAt: expireToken,

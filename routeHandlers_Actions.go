@@ -37,10 +37,12 @@ func GiveTrophy(rw http.ResponseWriter, req *http.Request, routeData RouteData) 
 			scoreTransaction := ScoreTransaction{
 				ID:              uuid.NewV4().String(),
 				CreatedAt:       time.Now(),
-				UserID:          request.UserId,
+				UserID:          user.ID,
+				UserName:        user.UserName,
 				TransactionType: TrophyTransaction,
-				ItemDataId:      request.TrophyId,
+				ItemDataId:      trophy.ID,
 				GivenBy:         routeData.Username,
+				GivenById:       routeData.UserId,
 				Points:          trophy.ScoreAmount,
 			}
 
@@ -89,10 +91,12 @@ func GiveMedal(rw http.ResponseWriter, req *http.Request, routeData RouteData) {
 			scoreTransaction := ScoreTransaction{
 				ID:              uuid.NewV4().String(),
 				CreatedAt:       time.Now(),
-				UserID:          request.UserId,
+				UserID:          user.ID,
+				UserName:        user.UserName,
 				TransactionType: MedalTransaction,
-				ItemDataId:      request.MedalId,
+				ItemDataId:      medal.ID,
 				GivenBy:         routeData.Username,
+				GivenById:       routeData.UserId,
 				Points:          medal.ScoreAmount,
 			}
 			db.Create(&scoreTransaction)
@@ -108,5 +112,27 @@ func GiveMedal(rw http.ResponseWriter, req *http.Request, routeData RouteData) {
 	} else {
 		rw.WriteHeader(http.StatusBadRequest)
 		return
+	}
+}
+
+func GetLastActions(rw http.ResponseWriter, req *http.Request, routeData RouteData) {
+
+	var lastActions []ScoreTransaction
+	db.Limit(5).Order("created_at desc").Find(&lastActions)
+
+	var publicActions []PublicAction
+	for _, transaction := range lastActions {
+		publicActions = append(publicActions,
+			PublicAction{
+				CreatedAt:  transaction.CreatedAt,
+				SourceUser: transaction.GivenBy,
+				TargetUser: transaction.UserName,
+				Item:       transaction.TransactionType})
+	}
+
+	response := GetLastActionsResponse{LastActions: publicActions}
+	rw.WriteHeader(http.StatusOK)
+	if err := json.NewEncoder(rw).Encode(response); err != nil {
+		panic(err)
 	}
 }

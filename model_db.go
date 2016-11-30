@@ -19,11 +19,15 @@ const (
 )
 
 type User struct {
-	ID       string `gorm:"primary_key;type:char(36)"`
-	UserName string `gorm:"unique_index:idx_username;type:varchar(30);"`
-	Password string `sql:"type:char(60)"`
-	IsLocked bool
-	IsAdmin  bool
+	ID                  string `gorm:"primary_key;type:char(36)"`
+	UserName            string `gorm:"unique_index:idx_username;type:varchar(30);"`
+	Password            string `sql:"type:char(60)"`
+	IsLocked            bool
+	IsAdmin             bool
+	Stats_TotalTrophies uint
+	Stats_TotalMedals   uint
+	Stats_TotalKudos    uint
+	Stats_TotalScore    uint
 }
 
 type ScoreTransaction struct {
@@ -51,12 +55,4 @@ type Trophy struct {
 	Image       string `gorm:"type:varchar(200)"`
 	Description string `gorm:"type:varchar(50)"`
 	ScoreAmount uint
-}
-
-type UserStatus struct {
-	UserId        string `gorm:"primary_key;type:char(36)"`
-	TotalMedals   uint
-	TotalTrophies uint
-	TotalKudos    uint
-	TotalScore    uint
 }

@@ -22,5 +22,4 @@ func scoreMigrations() {
 	db.AutoMigrate(&ScoreTransaction{})
 	db.AutoMigrate(&Medal{})
 	db.AutoMigrate(&Trophy{})
-	db.AutoMigrate(&UserStatus{})
 }

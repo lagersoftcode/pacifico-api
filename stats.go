@@ -2,13 +2,10 @@ package main
 
 func UpdateUserStats(userId string) {
 
-	var userStatus UserStatus
-	record := db.Where(&UserStatus{UserId: userId}).First(&userStatus)
+	var user User
+	record := db.Where(User{ID: userId}).First(&user)
 	if record.RecordNotFound() {
-		userStatus = UserStatus{
-			UserId: userId,
-		}
-		db.Create(&userStatus)
+		panic("user not found at UpdateUserStats: " + userId)
 	}
 	var totalMedals uint
 	db.Model(&ScoreTransaction{}).Where(&ScoreTransaction{UserID: userId, TransactionType: MedalTransaction}).Count(&totalMedals)
@@ -17,11 +14,11 @@ func UpdateUserStats(userId string) {
 	var totalKudos uint
 	db.Model(&ScoreTransaction{}).Where(&ScoreTransaction{UserID: userId, TransactionType: KudoTransaction}).Count(&totalKudos)
 
-	db.Exec("UPDATE user_statuses SET "+
-		"total_medals=?, total_trophies=?, total_kudos=?, total_score = "+
+	db.Exec("UPDATE users SET "+
+		"stats_total_medals=?, stats_total_trophies=?, stats_total_kudos=?, stats_total_score = "+
 		"(SELECT SUM(points) from score_transactions "+
 		"WHERE user_id=?)"+
-		" WHERE user_id = ?",
+		" WHERE id = ?",
 		totalMedals,
 		totalTrophies,
 		totalKudos,

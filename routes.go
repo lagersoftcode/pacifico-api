@@ -22,6 +22,7 @@ var routes = Routes{
 	Route{"CreateMedal", "POST", "/CreateMedal", true, true, CreateMedal},
 	Route{"GetMedals", "GET", "/GetMedals", true, false, GetMedals},
 	Route{"GiveTrophy", "POST", "/GiveTrophy", true, true, GiveTrophy},
+	Route{"GiveMedal", "POST", "/GiveMedal", true, true, GiveMedal},
 }
 
 func DeclareRoutes() {

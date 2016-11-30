@@ -81,3 +81,8 @@ type GiveTrophyRequest struct {
 	UserId   string
 	TrophyId string
 }
+
+type GiveMedalRequest struct {
+	UserId  string
+	MedalId string
+}

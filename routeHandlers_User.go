@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/twinj/uuid"
+
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -53,6 +55,7 @@ func CreateUser(rw http.ResponseWriter, req *http.Request, routeData RouteData) 
 		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(request.Password), bcrypt.DefaultCost)
 		if err == nil {
 			user := User{
+				ID:       uuid.NewV4().String(),
 				UserName: request.Username,
 				Password: string(hashedPassword),
 				IsLocked: false,

@@ -8,17 +8,14 @@ const (
 	MedalTransaction  ScoreTransactionType = 1
 	TrophyTransaction ScoreTransactionType = 2
 	KudoTransaction   ScoreTransactionType = 3
-	BossTransaction   ScoreTransactionType = 4
 )
 
-type MedalMaterial int
-
 const (
-	Bronze   MedalMaterial = 1
-	Silver   MedalMaterial = 2
-	Gold     MedalMaterial = 3
-	Diamond  MedalMaterial = 4
-	Platinum MedalMaterial = 5
+	Bronze   string = "Bronze"
+	Silver   string = "Silver"
+	Gold     string = "Gold"
+	Diamond  string = "Diamond"
+	Platinum string = "Platinum"
 )
 
 type User struct {
@@ -34,10 +31,9 @@ type ScoreTransaction struct {
 	CreatedAt       time.Time            `gorm:"index:idx_createdAt"`
 	TransactionType ScoreTransactionType `gorm:"index:idx_transactionType"`
 	UserID          string               `gorm:"index:idx_userId;type:char(36)"`
-	Description     string               `gorm:"type:varchar(50)"`
 	ItemDataId      string               `gorm:"type:char(36)"`
-	GivenBy         string               `gorm:"type:char(36)"`
-	ScoreAmount     uint
+	GivenBy         string               `gorm:"type:varchar(30)"`
+	Points          uint
 }
 
 type Medal struct {
@@ -45,7 +41,7 @@ type Medal struct {
 	Name        string `gorm:"type:varchar(50)"`
 	Description string `gorm:"type:varchar(50)"`
 	Image       string `gorm:"type:varchar(200)"`
-	Material    MedalMaterial
+	Material    string
 	ScoreAmount uint
 }
 
@@ -55,4 +51,12 @@ type Trophy struct {
 	Image       string `gorm:"type:varchar(200)"`
 	Description string `gorm:"type:varchar(50)"`
 	ScoreAmount uint
+}
+
+type UserStatus struct {
+	UserId        string `gorm:"primary_key;type:char(36)"`
+	TotalMedals   uint
+	TotalTrophies uint
+	TotalKudos    uint
+	TotalScore    uint
 }

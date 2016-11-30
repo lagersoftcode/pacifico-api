@@ -58,10 +58,13 @@ func CreateMedal(rw http.ResponseWriter, req *http.Request, routeData RouteData)
 			Name:        request.Name,
 			Description: request.Description,
 			Image:       request.Image,
-			Material:    MedalMaterial(request.Material),
+			Material:    request.Material,
 			ScoreAmount: request.ScoreAmount,
 		}
 		db.Create(&medal)
+	} else {
+		rw.WriteHeader(http.StatusBadRequest)
+		return
 	}
 
 	response := Response{http.StatusCreated}

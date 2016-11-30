@@ -47,6 +47,7 @@ func Authorize(handler http.Handler, routeData *RouteData, requiresAuth bool, ad
 
 		claims, claimsOk := token.Claims.(*Claims)
 		if token.Valid && claimsOk && (!adminOnly || adminOnly && claims.IsAdmin) {
+			routeData.Username = claims.Username
 			handler.ServeHTTP(res, req)
 			return
 		}

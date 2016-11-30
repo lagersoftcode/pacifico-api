@@ -14,7 +14,8 @@ type Claims struct {
 
 type BaseRouteHandler func(rw http.ResponseWriter, r *http.Request, routeData RouteData)
 type RouteData struct {
-	Body []byte
+	Body     []byte
+	Username string
 }
 
 type Response struct {
@@ -65,11 +66,18 @@ type GetTrophiesResponse struct {
 type CreateMedalRequest struct {
 	Name        string
 	Image       string
-	Material    int
+	Material    string
 	Description string
 	ScoreAmount uint
 }
 
 type GetMedalsResponse struct {
 	Medals []Medal
+}
+
+// Actions
+
+type GiveTrophyRequest struct {
+	UserId   string
+	TrophyId string
 }

@@ -34,22 +34,10 @@ func GiveTrophy(rw http.ResponseWriter, req *http.Request, routeData RouteData) 
 		existingTrans := db.Where(&ScoreTransaction{UserID: request.UserId, ItemDataId: request.TrophyId}).First(&trophyGiven)
 
 		if existingTrans.RecordNotFound() {
-			scoreTransaction := ScoreTransaction{
-				ID:              uuid.NewV4().String(),
-				CreatedAt:       time.Now(),
-				UserID:          user.ID,
-				UserName:        user.UserName,
-				TransactionType: TrophyTransaction,
-				ItemDataId:      trophy.ID,
-				GivenBy:         routeData.Username,
-				GivenById:       routeData.UserId,
-				Points:          trophy.ScoreAmount,
-			}
-
-			db.Create(&scoreTransaction)
-
+			createScoreTransaction(user, routeData, TrophyTransaction, trophy.ID, trophy.ScoreAmount)
+			UpdateUserStats(request.UserId)
 		}
-		UpdateUserStats(request.UserId)
+
 		response := Response{http.StatusCreated}
 		rw.WriteHeader(http.StatusCreated)
 		if err := json.NewEncoder(rw).Encode(response); err != nil {
@@ -88,21 +76,10 @@ func GiveMedal(rw http.ResponseWriter, req *http.Request, routeData RouteData) {
 		existingTrans := db.Where(&ScoreTransaction{UserID: request.UserId, ItemDataId: request.MedalId}).First(&medalGiven)
 
 		if existingTrans.RecordNotFound() {
-			scoreTransaction := ScoreTransaction{
-				ID:              uuid.NewV4().String(),
-				CreatedAt:       time.Now(),
-				UserID:          user.ID,
-				UserName:        user.UserName,
-				TransactionType: MedalTransaction,
-				ItemDataId:      medal.ID,
-				GivenBy:         routeData.Username,
-				GivenById:       routeData.UserId,
-				Points:          medal.ScoreAmount,
-			}
-			db.Create(&scoreTransaction)
+			createScoreTransaction(user, routeData, MedalTransaction, medal.ID, medal.ScoreAmount)
+			UpdateUserStats(request.UserId)
 		}
 
-		UpdateUserStats(request.UserId)
 		response := Response{http.StatusCreated}
 		rw.WriteHeader(http.StatusCreated)
 		if err := json.NewEncoder(rw).Encode(response); err != nil {
@@ -113,6 +90,56 @@ func GiveMedal(rw http.ResponseWriter, req *http.Request, routeData RouteData) {
 		rw.WriteHeader(http.StatusBadRequest)
 		return
 	}
+}
+
+func GiveKudo(rw http.ResponseWriter, req *http.Request, routeData RouteData) {
+	var request GiveKudoRequest
+	parseErr := json.Unmarshal(routeData.Body, &request)
+	if parseErr != nil {
+		panic(parseErr)
+	}
+
+	if len(request.UserId) > 1 {
+		var user User
+		existingUser := db.Where(&User{ID: request.UserId}).First(&user)
+		if existingUser.RecordNotFound() {
+			rw.WriteHeader(http.StatusBadRequest)
+			return
+		}
+
+		thirtyMinutesAgo := time.Now().Add(-30 * time.Minute)
+		existingTrans := db.Where("created_at > ? AND user_id = ? AND given_by_id = ?", thirtyMinutesAgo, user.ID, routeData.UserId).First(&ScoreTransaction{})
+
+		if existingTrans.RecordNotFound() {
+			createScoreTransaction(user, routeData, MedalTransaction, "", 20)
+			UpdateUserStats(request.UserId)
+		}
+
+		response := Response{http.StatusCreated}
+		rw.WriteHeader(http.StatusCreated)
+		if err := json.NewEncoder(rw).Encode(response); err != nil {
+			panic(err)
+		}
+
+	} else {
+		rw.WriteHeader(http.StatusBadRequest)
+		return
+	}
+}
+
+func createScoreTransaction(user User, routeData RouteData, transactionType string, itemId string, points uint) {
+	scoreTransaction := ScoreTransaction{
+		ID:              uuid.NewV4().String(),
+		CreatedAt:       time.Now(),
+		UserID:          user.ID,
+		UserName:        user.UserName,
+		TransactionType: transactionType,
+		ItemDataId:      itemId,
+		GivenBy:         routeData.Username,
+		GivenById:       routeData.UserId,
+		Points:          points,
+	}
+	db.Create(&scoreTransaction)
 }
 
 func GetLastActions(rw http.ResponseWriter, req *http.Request, routeData RouteData) {

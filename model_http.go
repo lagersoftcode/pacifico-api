@@ -93,6 +93,10 @@ type GiveMedalRequest struct {
 	MedalId string
 }
 
+type GiveKudoRequest struct {
+	UserId string
+}
+
 type PublicAction struct {
 	CreatedAt  time.Time
 	SourceUser string

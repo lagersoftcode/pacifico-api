@@ -23,6 +23,7 @@ var routes = Routes{
 	Route{"GetMedals", "GET", "/GetMedals", true, false, GetMedals},
 	Route{"GiveTrophy", "POST", "/GiveTrophy", true, true, GiveTrophy},
 	Route{"GiveMedal", "POST", "/GiveMedal", true, true, GiveMedal},
+	Route{"GiveKudo", "POST", "/GiveKudo", true, false, GiveKudo},
 	Route{"GetLastActions", "GET", "/GetLastActions", true, false, GetLastActions},
 }
 

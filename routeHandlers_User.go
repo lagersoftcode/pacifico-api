@@ -55,11 +55,14 @@ func CreateUser(rw http.ResponseWriter, req *http.Request, routeData RouteData) 
 		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(request.Password), bcrypt.DefaultCost)
 		if err == nil {
 			user := User{
-				ID:       uuid.NewV4().String(),
-				UserName: request.Username,
-				Password: string(hashedPassword),
-				IsLocked: false,
-				IsAdmin:  false,
+				ID:        uuid.NewV4().String(),
+				UserName:  request.Username,
+				Password:  string(hashedPassword),
+				FirstName: request.FirstName,
+				LastName:  request.LastName,
+				Email:     request.LastName,
+				IsLocked:  false,
+				IsAdmin:   false,
 			}
 			db.Create(&user)
 		}

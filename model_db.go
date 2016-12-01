@@ -20,6 +20,9 @@ type User struct {
 	ID                  string `gorm:"primary_key;type:char(36)"`
 	UserName            string `gorm:"unique_index:idx_username;type:varchar(30);"`
 	Password            string `sql:"type:char(60)"`
+	FirstName           string `gorm:"type:varchar(20)"`
+	LastName            string `gorm:"type:varchar(20)"`
+	Email               string `gorm:"type:varchar(60)"`
 	IsLocked            bool
 	IsAdmin             bool
 	Stats_TotalTrophies uint

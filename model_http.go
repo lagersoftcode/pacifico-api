@@ -28,8 +28,11 @@ type Response struct {
 // Login
 
 type CreateUserRequest struct {
-	Username string
-	Password string
+	Username  string
+	Password  string
+	FirstName string
+	LastName  string
+	Email     string
 }
 
 type CreateUserResponse struct {

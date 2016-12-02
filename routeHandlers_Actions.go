@@ -107,18 +107,27 @@ func GiveKudo(rw http.ResponseWriter, req *http.Request, routeData RouteData) {
 			return
 		}
 
+		if user.ID == routeData.UserId {
+			rw.WriteHeader(http.StatusConflict)
+			return
+		}
+
 		thirtyMinutesAgo := time.Now().Add(-30 * time.Minute)
 		existingTrans := db.Where("created_at > ? AND user_id = ? AND given_by_id = ?", thirtyMinutesAgo, user.ID, routeData.UserId).First(&ScoreTransaction{})
 
 		if existingTrans.RecordNotFound() {
-			createScoreTransaction(user, routeData, MedalTransaction, "", 20)
+			createScoreTransaction(user, routeData, KudoTransaction, "", 20)
 			UpdateUserStats(request.UserId)
+			rw.WriteHeader(http.StatusCreated)
+		} else {
+			rw.WriteHeader(http.StatusNotAcceptable)
 		}
 
 		response := Response{http.StatusCreated}
-		rw.WriteHeader(http.StatusCreated)
+
 		if err := json.NewEncoder(rw).Encode(response); err != nil {
-			panic(err)
+			rw.WriteHeader(http.StatusInternalServerError)
+			return
 		}
 
 	} else {

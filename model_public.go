@@ -37,7 +37,7 @@ type UserMedal struct {
 	Image           string
 	Points          int
 	Name            string
-	Descrtiption    string
+	Description     string
 	Material        string
 }
 

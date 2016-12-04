@@ -203,3 +203,24 @@ func GetUserLastKudos(rw http.ResponseWriter, req *http.Request, routeData Route
 		rw.WriteHeader(http.StatusInternalServerError)
 	}
 }
+
+func GetUserStats(rw http.ResponseWriter, req *http.Request, routeData RouteData) {
+	queryUserId := req.URL.Query().Get("userId")
+	if queryUserId == "" {
+		rw.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	var publicUser PublicUser
+	var user User
+	existingUser := db.Where(&User{ID: queryUserId}).First(&user).Scan(&publicUser)
+	if existingUser.RecordNotFound() {
+		rw.WriteHeader(http.StatusNotFound)
+		return
+	}
+
+	if err := json.NewEncoder(rw).Encode(publicUser); err != nil {
+		log.Println(err)
+		rw.WriteHeader(http.StatusInternalServerError)
+	}
+}

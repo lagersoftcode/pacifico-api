@@ -2,7 +2,6 @@ package main
 
 import (
 	"net/http"
-	"time"
 
 	jwt "github.com/dgrijalva/jwt-go"
 )
@@ -99,13 +98,18 @@ type GiveKudoRequest struct {
 	UserId string
 }
 
-type PublicAction struct {
-	CreatedAt  time.Time
-	SourceUser string
-	TargetUser string
-	Item       string
-}
-
 type GetLastActionsResponse struct {
 	LastActions []PublicAction
+}
+
+type GetUserTrophiesResponse struct {
+	Transactions []UserTrophy
+}
+
+type GetUserMedalsResponse struct {
+	Transactions []UserMedal
+}
+
+type GetUserLastKudosResponse struct {
+	Transactions []UserKudo
 }

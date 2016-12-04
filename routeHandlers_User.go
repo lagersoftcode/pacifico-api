@@ -108,3 +108,98 @@ func GetUsers(rw http.ResponseWriter, req *http.Request, routeData RouteData) {
 		rw.WriteHeader(http.StatusInternalServerError)
 	}
 }
+
+func GetUserTrophies(rw http.ResponseWriter, req *http.Request, routeData RouteData) {
+
+	queryUserId := req.URL.Query().Get("userId")
+	if queryUserId == "" {
+		rw.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	var user User
+	existingUser := db.Where(&User{ID: queryUserId}).First(&user)
+	if existingUser.RecordNotFound() {
+		rw.WriteHeader(http.StatusNotFound)
+		return
+	}
+
+	var transactions []UserTrophy
+	db.Table("score_transactions").
+		Where("score_transactions.user_id = ? and transaction_type = 'Trophy'", queryUserId).
+		Select(`score_transactions.created_at, score_transactions.given_by, score_transactions.user_name, score_transactions.transaction_type,
+			score_transactions.points, trophies.image, trophies.name, trophies.description`).
+		Joins("inner join trophies on score_transactions.item_data_id = trophies.id").
+		Order("created_at desc").
+		Scan(&transactions)
+
+	response := GetUserTrophiesResponse{Transactions: transactions}
+
+	if err := json.NewEncoder(rw).Encode(response); err != nil {
+		log.Println(err)
+		rw.WriteHeader(http.StatusInternalServerError)
+	}
+}
+
+func GetUserMedals(rw http.ResponseWriter, req *http.Request, routeData RouteData) {
+
+	queryUserId := req.URL.Query().Get("userId")
+	if queryUserId == "" {
+		rw.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	var user User
+	existingUser := db.Where(&User{ID: queryUserId}).First(&user)
+	if existingUser.RecordNotFound() {
+		rw.WriteHeader(http.StatusNotFound)
+		return
+	}
+
+	var transactions []UserMedal
+	db.Table("score_transactions").
+		Where("score_transactions.user_id = ? and transaction_type = 'Medal'", queryUserId).
+		Select(`score_transactions.created_at, score_transactions.given_by, score_transactions.user_name, score_transactions.transaction_type,
+			score_transactions.points, medals.image, medals.name, medals.description, medals.material`).
+		Joins("inner join medals on score_transactions.item_data_id = medals.id").
+		Order("created_at desc").
+		Scan(&transactions)
+
+	response := GetUserMedalsResponse{Transactions: transactions}
+
+	if err := json.NewEncoder(rw).Encode(response); err != nil {
+		log.Println(err)
+		rw.WriteHeader(http.StatusInternalServerError)
+	}
+}
+
+func GetUserLastKudos(rw http.ResponseWriter, req *http.Request, routeData RouteData) {
+
+	queryUserId := req.URL.Query().Get("userId")
+	if queryUserId == "" {
+		rw.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	var user User
+	existingUser := db.Where(&User{ID: queryUserId}).First(&user)
+	if existingUser.RecordNotFound() {
+		rw.WriteHeader(http.StatusNotFound)
+		return
+	}
+
+	var transactions []UserKudo
+	db.Limit(10).Table("score_transactions").
+		Where("score_transactions.user_id = ? and transaction_type = 'Kudo'", queryUserId).
+		Select(`score_transactions.created_at, score_transactions.given_by, score_transactions.user_name, score_transactions.transaction_type,
+			score_transactions.points`).
+		Order("created_at desc").
+		Scan(&transactions)
+
+	response := GetUserLastKudosResponse{Transactions: transactions}
+
+	if err := json.NewEncoder(rw).Encode(response); err != nil {
+		log.Println(err)
+		rw.WriteHeader(http.StatusInternalServerError)
+	}
+}

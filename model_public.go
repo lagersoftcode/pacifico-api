@@ -26,7 +26,7 @@ type UserTrophy struct {
 	Image           string
 	Points          int
 	Name            string
-	Descrtiption    string
+	Description     string
 }
 
 type UserMedal struct {

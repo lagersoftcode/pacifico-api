@@ -80,8 +80,8 @@ func CreateUser(rw http.ResponseWriter, req *http.Request, routeData RouteData) 
 
 func GetUsers(rw http.ResponseWriter, req *http.Request, routeData RouteData) {
 
-	resultsPerPage := 9
-	queryUser := req.URL.Query().Get("usersearch")
+	resultsPerPage := 6
+	queryUser := req.URL.Query().Get("userSearch")
 	queryPage := req.URL.Query().Get("page")
 	page, err := strconv.Atoi(queryPage)
 
@@ -100,12 +100,11 @@ func GetUsers(rw http.ResponseWriter, req *http.Request, routeData RouteData) {
 	var totalUsers int
 	db.Model(&User{}).Where("user_name like ?", "%"+queryUser+"%").Count(&totalUsers)
 	totalPages := int(math.Ceil(float64(totalUsers) / float64(resultsPerPage)))
-	response := GetUsersResponse{Users: publicUsers, TotalPages: totalPages}
+
+	response := GetUsersResponse{Users: publicUsers, CurrentPage: page + 1, TotalPages: totalPages}
 
 	if err := json.NewEncoder(rw).Encode(response); err != nil {
 		log.Println(err)
 		rw.WriteHeader(http.StatusInternalServerError)
-	} else {
-		rw.WriteHeader(http.StatusOK)
 	}
 }

@@ -40,8 +40,9 @@ type CreateUserResponse struct {
 }
 
 type GetUsersResponse struct {
-	Users      []PublicUser
-	TotalPages int
+	Users       []PublicUser
+	CurrentPage int
+	TotalPages  int
 }
 
 type LoginRequest struct {

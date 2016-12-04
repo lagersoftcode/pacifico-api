@@ -2,7 +2,10 @@ package main
 
 import (
 	"encoding/json"
+	"log"
+	"math"
 	"net/http"
+	"strconv"
 
 	"github.com/twinj/uuid"
 
@@ -77,12 +80,31 @@ func CreateUser(rw http.ResponseWriter, req *http.Request, routeData RouteData) 
 
 func GetUsers(rw http.ResponseWriter, req *http.Request, routeData RouteData) {
 
+	queryUser := req.URL.Query().Get("usersearch")
+	queryPage := req.URL.Query().Get("page")
+	page, err := strconv.Atoi(queryPage)
+
+	if err != nil {
+		page = 0
+	} else {
+		if page > 0 {
+			page = page - 1
+		}
+	}
+
 	var users []User
 	var publicUsers []PublicUser
-	db.Find(&users).Scan(&publicUsers)
-	response := GetUsersResponse{Users: publicUsers}
-	rw.WriteHeader(http.StatusOK)
+	db.Offset(page*2).Limit(2).Where("user_name like ?", "%"+queryUser+"%").Find(&users).Scan(&publicUsers) //possible sql injection?
+
+	var totalUsers int
+	db.Model(&User{}).Where("user_name like ?", "%"+queryUser+"%").Count(&totalUsers)
+	totalPages := int(math.Ceil(float64(totalUsers) / float64(2)))
+	response := GetUsersResponse{Users: publicUsers, TotalPages: totalPages}
+
 	if err := json.NewEncoder(rw).Encode(response); err != nil {
-		panic(err)
+		log.Println(err)
+		rw.WriteHeader(http.StatusInternalServerError)
+	} else {
+		rw.WriteHeader(http.StatusOK)
 	}
 }

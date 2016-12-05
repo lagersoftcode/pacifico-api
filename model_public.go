@@ -5,6 +5,7 @@ import "time"
 type PublicUser struct {
 	ID                  string
 	UserName            string
+	Category            string
 	Stats_TotalTrophies uint
 	Stats_TotalMedals   uint
 	Stats_TotalKudos    uint

@@ -63,7 +63,7 @@ func CreateUser(rw http.ResponseWriter, req *http.Request, routeData RouteData) 
 				Password:  string(hashedPassword),
 				FirstName: request.FirstName,
 				LastName:  request.LastName,
-				Email:     request.LastName,
+				Email:     request.Email,
 				Category:  request.Category,
 				IsLocked:  false,
 				IsAdmin:   false,

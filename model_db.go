@@ -23,6 +23,7 @@ type User struct {
 	FirstName           string `gorm:"type:varchar(20)"`
 	LastName            string `gorm:"type:varchar(20)"`
 	Email               string `gorm:"type:varchar(60)"`
+	Category            string `gorm:"index:idx_category;type:varchar(30)"`
 	About               string `gorm:"type:varchar(150)"`
 	IsLocked            bool
 	IsAdmin             bool

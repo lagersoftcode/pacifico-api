@@ -32,6 +32,7 @@ type CreateUserRequest struct {
 	FirstName string
 	LastName  string
 	Email     string
+	Category  string
 }
 
 type CreateUserResponse struct {

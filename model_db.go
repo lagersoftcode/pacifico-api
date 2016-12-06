@@ -75,7 +75,7 @@ type Avatar struct {
 
 type AvatarItem struct {
 	ID             string `gorm:"primary_key;type:char(36)"`
-	image          string `gorm:"type:varchar(200)"`
+	Image          string `gorm:"type:varchar(200)"`
 	Type           string `gorm:"type:varchar(15)"`
 	UnlockedByItem string `gorm:"type:char(36)"`
 	Orientation    string `gorm:"type:varchar(15)"`

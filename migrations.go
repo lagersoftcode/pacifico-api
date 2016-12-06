@@ -5,6 +5,7 @@ import "github.com/twinj/uuid"
 func RunMigrations() {
 	userMigrations()
 	scoreMigrations()
+	avatarMigrations()
 }
 
 func userMigrations() {
@@ -22,4 +23,9 @@ func scoreMigrations() {
 	db.AutoMigrate(&ScoreTransaction{})
 	db.AutoMigrate(&Medal{})
 	db.AutoMigrate(&Trophy{})
+}
+
+func avatarMigrations() {
+	db.AutoMigrate(&Avatar{})
+	db.AutoMigrate(&AvatarItem{})
 }

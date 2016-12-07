@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 
 	"github.com/twinj/uuid"
@@ -40,7 +41,8 @@ func GetTrophies(rw http.ResponseWriter, req *http.Request, routeData RouteData)
 	response := GetTrophiesResponse{Trophies: trophies}
 	rw.WriteHeader(http.StatusCreated)
 	if err := json.NewEncoder(rw).Encode(response); err != nil {
-		panic(err)
+		log.Println(err)
+		rw.WriteHeader(http.StatusInternalServerError)
 	}
 }
 
@@ -49,7 +51,8 @@ func CreateMedal(rw http.ResponseWriter, req *http.Request, routeData RouteData)
 	var request CreateMedalRequest
 	parseErr := json.Unmarshal(routeData.Body, &request)
 	if parseErr != nil {
-		panic(parseErr)
+		log.Println(parseErr)
+		rw.WriteHeader(http.StatusInternalServerError)
 	}
 
 	if len(request.Name) > 0 && len(request.Image) > 0 {
@@ -70,7 +73,8 @@ func CreateMedal(rw http.ResponseWriter, req *http.Request, routeData RouteData)
 	response := Response{http.StatusCreated}
 	rw.WriteHeader(http.StatusCreated)
 	if err := json.NewEncoder(rw).Encode(response); err != nil {
-		panic(err)
+		log.Println(err)
+		rw.WriteHeader(http.StatusInternalServerError)
 	}
 }
 
@@ -81,6 +85,7 @@ func GetMedals(rw http.ResponseWriter, req *http.Request, routeData RouteData) {
 	response := GetMedalsResponse{Medals: medals}
 	rw.WriteHeader(http.StatusCreated)
 	if err := json.NewEncoder(rw).Encode(response); err != nil {
-		panic(err)
+		log.Println(err)
+		rw.WriteHeader(http.StatusInternalServerError)
 	}
 }

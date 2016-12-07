@@ -17,7 +17,8 @@ func Login(rw http.ResponseWriter, req *http.Request, routeData RouteData) {
 	var request LoginRequest
 	parseErr := json.Unmarshal(routeData.Body, &request)
 	if parseErr != nil {
-		panic(parseErr)
+		log.Println(parseErr)
+		rw.WriteHeader(http.StatusInternalServerError)
 	}
 
 	var response LoginResponse
@@ -42,7 +43,8 @@ func Login(rw http.ResponseWriter, req *http.Request, routeData RouteData) {
 	}
 
 	if err := json.NewEncoder(rw).Encode(response); err != nil {
-		panic(err)
+		log.Println(err)
+		rw.WriteHeader(http.StatusInternalServerError)
 	}
 }
 
@@ -51,7 +53,8 @@ func CreateUser(rw http.ResponseWriter, req *http.Request, routeData RouteData) 
 	var request CreateUserRequest
 	parseErr := json.Unmarshal(routeData.Body, &request)
 	if parseErr != nil {
-		panic(parseErr)
+		log.Println(parseErr)
+		rw.WriteHeader(http.StatusInternalServerError)
 	}
 
 	if len(request.Username) > 0 && len(request.Password) > 0 {
@@ -75,7 +78,8 @@ func CreateUser(rw http.ResponseWriter, req *http.Request, routeData RouteData) 
 	response := CreateUserResponse{Response{http.StatusCreated}}
 	rw.WriteHeader(http.StatusCreated)
 	if err := json.NewEncoder(rw).Encode(response); err != nil {
-		panic(err)
+		log.Println(err)
+		rw.WriteHeader(http.StatusInternalServerError)
 	}
 }
 

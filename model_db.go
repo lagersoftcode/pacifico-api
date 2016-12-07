@@ -64,13 +64,11 @@ type Trophy struct {
 }
 
 type Avatar struct {
-	ID              string `gorm:"primary_key;type:char(36)"`
-	Head            string `gorm:"type:char(36)"`
-	Body            string `gorm:"type:char(36)"`
-	LeftHand        string `gorm:"type:char(36)"`
-	RightHand       string `gorm:"type:char(36)"`
-	WeaponRightHand string `gorm:"type:char(36)"`
-	WeaponLeftHand  string `gorm:"type:char(36)"`
+	ID        string `gorm:"primary_key;type:char(36)"`
+	Head      string `gorm:"type:char(36)"`
+	Body      string `gorm:"type:char(36)"`
+	LeftHand  string `gorm:"type:char(36)"`
+	RightHand string `gorm:"type:char(36)"`
 }
 
 type AvatarItem struct {
@@ -79,5 +77,6 @@ type AvatarItem struct {
 	Type           string `gorm:"type:varchar(15)"`
 	UnlockedByItem string `gorm:"type:char(36)"`
 	Orientation    string `gorm:"type:varchar(15)"`
+	Color          string `gorm:"type:varchar(15)"`
 	PointsRequired uint
 }
